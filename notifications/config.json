@@ -1,0 +1,21 @@
+{
+  "base": {
+    "project": "Some project name",
+    "environment": "qa.guru",
+    "comment": "comment",
+    "reportLink": "",
+    "language": "en",
+    "allureFolder": "build/allure-report/",
+    "enableChart": true,
+    "darkMode": false,
+    "enableSuitesPublishing": false,
+    "customData": {}
+  },
+  "telegram": {
+    "token": "8717452925:AAFukxzjWTReqLAJV8Ii8yMm6ESbFLTWFbg",
+    "chat": "-1003968274272",
+    "topic": "",
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
+  }
+}
