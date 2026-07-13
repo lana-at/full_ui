@@ -6,16 +6,11 @@ import helpers.Attach;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import pages.MainPage;
-import java.time.Duration;
-import static com.codeborne.selenide.Condition.visible;
 
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 public class BaseTest {
@@ -23,27 +18,25 @@ public class BaseTest {
 
     @BeforeAll
     static void configure() {
+        // Настройки для текущего проекта
         Configuration.baseUrl = "https://softline.ru";
         Configuration.browserSize = "1920x1080";
         Configuration.timeout = 10000;
         Configuration.pageLoadStrategy = "normal";
+        Configuration.browserPosition = "0x0";
+        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub";
 
-        // Настройки для Selenoid (удалённый запуск)
-        String remote = System.getProperty("remote", "");
-        if (!remote.isEmpty()) {
-            Configuration.remote = remote;
-            Configuration.browser = System.getProperty("browser", "chrome");
-            Configuration.browserVersion = System.getProperty("browserVersion", "120.0");
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("selenoid:options", Map.of(
+                "enableVNC", true,
+                "enableVideo", true
+        ));
+        Configuration.browserCapabilities = capabilities;
 
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability("selenoid:options", Map.of(
-                    "enableVNC", true,
-                    "enableVideo", true
-            ));
-            Configuration.browserCapabilities = capabilities;
-        }
-
-        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
+        SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
+                .screenshots(true)
+                .savePageSource(true)
+        );
     }
 
     @AfterEach
@@ -54,5 +47,4 @@ public class BaseTest {
         Attach.addVideo();
         closeWebDriver();
     }
-
 }
